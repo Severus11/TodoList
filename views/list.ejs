@@ -1,28 +1,19 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    <h1>It is a <%=kindofDay%> !</h1>
-<!-- <% if (kindofDay==="Saturday" || kindofDay === "Sunday"){ %>
-      <h1 style="color: purple">It is a <%=kindofDay%> ToDo list !</h1>
-  <% }else{ %>
-      <h1 style ="color: red">It is a <%=kindofDay%> ToDo list !</h1>
-    <% } %> -->
-    <ul>
-      <li>Buy food</li>
-      <li>cook food</li>
-      <li>eat food</li>
-      <li> <%=newItem%>
-    </ul>
+<%- include('header') -%>
+    <div class="box" id="heading">
+      <h1>It is a <%=listTitle%> !</h1>
+    </div>
+    <div class="box">
+        <% for(var i=0; i<newItems.length; i++){ %>
+          <div class="item">
+            <input type="checkbox" name="" value="">
+            <p><%=newItems[i]%></p>
+          </div>
 
-    <form class="" action="/" method="post">
-      <input type="text" name="newItem">
-      <button type="submit" name="button">Add to list</button>
+        <%}%>
+        <form class="item" action="/" method="post">
+          <input type="text" name="newItem" placeholder="New Task" autocomplete="off">
+          <button type="submit" name="list" value="<%= listTitle %>">+</button>
+        </form>
+    </div>
 
-    </form>
-
-  </body>
-</html>
+<%- include('footer') -%>

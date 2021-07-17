@@ -4,11 +4,13 @@
     </div>
     <div class="box">
       <%newItems.forEach(function(i){ %>
-        <div class='item'>
-           <input type ="checkbox">
-          <p><%= i.task %></p>
+        <form method="post" action="/delete">
+          <div class='item'>
+            <input type ="checkbox" name = "checkbox" value="<%=i._id%>" onChange="this.form.submit()">
+            <p><%= i.task %></p>
 
-        </div>
+          </div>
+        </form>
       <%})%>
         <form class="item" action="/" method="post">
           <input type="text" name="newItem" placeholder="New Task" autocomplete="off">

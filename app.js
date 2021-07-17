@@ -2,6 +2,8 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const date = require(__dirname +  "/date.js")
 const mongoose = require("mongoose" )
+const lodash = require("lodash")
+const { result } = require("lodash")
 
 const app = express()
 
@@ -17,7 +19,13 @@ const itemsSchema =  new mongoose.Schema({
   }
 })
 
+const listSchema = new mongoose.Schema({
+  name: String,
+  items: [itemsSchema]
+})
+
 const item = mongoose.model('item' ,itemsSchema) 
+const List = mongoose.model("List", listSchema)
 
 const item1 = new item ({
   task: "Welcome to your To Do list"
@@ -50,15 +58,38 @@ app.get("/", function(req,res){
       res.redirect("/")
     }
     else{
-    res.render("list", {listTitle:"Today",newItems: result})
+    res.render("list", {listTitle:day ,newItems: result})
     }
   }) 
 })
 
-app.get("/work", function(req,res){
-  res.render("list", {listTitle: "Work List" , newItems: workitems})
+// app.get("/work", function(req,res){
+//   res.render("list", {listTitle: "Work List" , newItems: workitems})
 
+// })
+
+app.get("/:customListName", function(req,res){
+  const customListName = req.params.customListName
+  
+  List.findOne({name: customListName}, function(err, result){
+    if(!err){
+      if(!result){
+        const list = new List({
+          name: customListName,
+          items: defaultitems
+        })
+        list.save()
+        res.redirect("/" + customListName)
+      }
+      else{
+        res.render("list", {listTitle: result.name, newItems: result.items})
+      }
+    }
+  })
+ 
+  
 })
+
 
 app.get("/about", function(req,res){
   res.render("about")
@@ -71,17 +102,27 @@ app.post("/work", function(req,res){
 })
 
 app.post("/", function(req,res){
-  var item = req.body.newItem
-  if(req.body.list ==="Work List")
-  {
-    workitems.push(item)
-    res.redirect("/work")
-  }
-  else {
-      items.push(item)
-      res.redirect("/")
-  }
+  var newItem = req.body.newItem
+  const newTask = new item ({
+    task: newItem
+  })
 
+  newTask.save()
+  res.redirect("/")  
+})
+
+app.post("/delete", function(req,res){
+  const checkedItemId = req.body.checkbox
+  item.findByIdAndDelete(checkedItemId, function(err){
+    if(err){
+      console.log(err)
+    }
+    else{
+      console.log("item deleted successfully")
+    }
+  })
+
+  res.redirect("/")
 })
 
 app.listen(3000, function(){

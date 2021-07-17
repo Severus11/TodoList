@@ -58,15 +58,10 @@ app.get("/", function(req,res){
       res.redirect("/")
     }
     else{
-    res.render("list", {listTitle:day ,newItems: result})
+    res.render("list", {listTitle:"Today" ,newItems: result})
     }
   }) 
 })
-
-// app.get("/work", function(req,res){
-//   res.render("list", {listTitle: "Work List" , newItems: workitems})
-
-// })
 
 app.get("/:customListName", function(req,res){
   const customListName = req.params.customListName
@@ -88,7 +83,7 @@ app.get("/:customListName", function(req,res){
   })
  
   
-})
+})  
 
 
 app.get("/about", function(req,res){
@@ -113,14 +108,28 @@ app.post("/", function(req,res){
 
 app.post("/delete", function(req,res){
   const checkedItemId = req.body.checkbox
-  item.findByIdAndDelete(checkedItemId, function(err){
-    if(err){
-      console.log(err)
-    }
-    else{
-      console.log("item deleted successfully")
-    }
-  })
+  const listName = req.body.listName
+
+  if (listName === "Today")
+  {
+    item.findByIdAndDelete(checkedItemId, function(err){
+      if(!err){
+        console.log("deleted")
+        res.render("/")
+      }
+    })
+  }else{
+    List.findOneAndUpdate(
+      {name: listName},
+      {$pull:{items:{_id: checkedItemId}}},
+      function(err, result){
+        if(!err){
+          res.redirect("/"+ listName)
+        }
+      }
+    )
+  }
+  
 
   res.redirect("/")
 })

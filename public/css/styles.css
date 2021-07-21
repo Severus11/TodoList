@@ -71,13 +71,16 @@ form.item {
 .newAddButton {
   min-height: 50px;
   width: 50px;
-  border-radius: 50% !important;
+  border-radius: 25% !important;
   border-color: transparent;
   background-color: #301355;
   color: #fff !important;
   font-size: 30px !important;
   font-weight:unset;
+  text-align: center !important;
+   
   padding-bottom: 6px;
+  /* margin-right: 10px; */
   border-width: 0;
 }
 
